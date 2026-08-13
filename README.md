@@ -2,6 +2,19 @@
 
 Carpoolz (with a Z) is a full-stack carpool cordination app originally built for USC's Ski and Snowboard team as a personal project. Each weekend, members can submit travel preferences, browse available cars, and request changes. Organizers can manage drivers, passengers, capacity, and requests, all in one place.
 
+## Tech stack
+
+- **Frontend:** React 19, JavaScript, JSX, CSS
+- **Build tooling:** Vite 8
+- **Backend:** Supabase
+- **Database:** PostgreSQL through Supabase
+- **Realtime:** Supabase Realtime subscriptions
+- **Code quality:** ESLint 9 with React Hooks and React Refresh rules
+
+## Demo
+
+https://github.com/user-attachments/assets/cfbc94d3-6895-4e65-a14b-c2ab3857b5e3
+
 ## Features
 
 - Rider signup with departure and return availability
@@ -12,15 +25,6 @@ Carpoolz (with a Z) is a full-stack carpool cordination app originally built for
 - Organizer dashboard for managing people, cars, assignments, and announcements
 - Live UI refreshes through Supabase Realtime
 - Responsive interface for desktop and mobile
-
-## Tech stack
-
-- **Frontend:** React 19, JavaScript, JSX, CSS
-- **Build tooling:** Vite 8
-- **Backend:** Supabase
-- **Database:** PostgreSQL through Supabase
-- **Realtime:** Supabase Realtime subscriptions
-- **Code quality:** ESLint 9 with React Hooks and React Refresh rules
 
 ## How it works
 
