@@ -1,6 +1,8 @@
 # Carpoolz
 
-Carpoolz (with a Z) is a full-stack carpool cordination app originally built for USC's Ski and Snowboard team as a personal project. Each weekend, members can submit travel preferences, browse available cars, and request changes. Organizers can manage drivers, passengers, capacity, and requests, all in one place.
+Carpoolz (with a Z) is a full-stack carpool coordination app originally built for USC's Ski and Snowboard team as a personal project. Each weekend, members can submit travel preferences, browse available cars, and request changes. Organizers can manage drivers, passengers, capacity, and requests, all in one place.
+
+> **Note:** the organizer dashboard (`src/components/AdminPanel.jsx`) is not exposed in this public version, because it needs real authentication first. See [future improvements](#future-improvements).
 
 ## Tech stack
 
@@ -25,6 +27,16 @@ https://github.com/user-attachments/assets/cfbc94d3-6895-4e65-a14b-c2ab3857b5e3
 - Organizer dashboard for managing people, cars, assignments, and announcements
 - Live UI refreshes through Supabase Realtime
 - Responsive interface for desktop and mobile
+
+## The matching algorithm
+
+The core logic lives in [`src/lib/matching.js`](src/lib/matching.js) as pure functions, separate from React and Supabase, so it can be unit tested.
+
+1. **Hard constraints.** A car is only a candidate if the rider's time window overlaps the car's departure window, the car has an open seat, and (for return trips) the rider already has a ride up.
+2. **Scoring.** Each candidate starts at 50 points: +20 if it leaves on the rider's preferred date, +10 if its Sunday-skiing plan matches the rider's.
+3. **Greedy assignment.** Drivers are placed in their own cars first. Then each unassigned rider takes the highest-scoring car with space, outbound before return.
+
+Organizers can then adjust any assignment by hand.
 
 ## How it works
 
@@ -69,12 +81,34 @@ The goal is to make a usually complicated responsibility a little easier, lettin
    npm run dev
    ```
 
+## Project structure
+
+```
+src/
+├── App.jsx                 # Data loading, realtime subscriptions, signup and request handlers
+├── lib/
+│   ├── matching.js         # Scoring and auto-assignment (pure, unit tested)
+│   ├── matching.test.js
+│   ├── time.js             # Date and time-window helpers
+│   ├── constants.js        # Time slots, signup tiers, deadlines
+│   ├── csv.js              # Organizer CSV export
+│   └── db.js               # Supabase row ↔ app object mapping
+├── components/
+│   ├── tabs/               # Carpools, Sign Up and My Spot views
+│   ├── admin/              # Organizer dashboard views and dialogs
+│   ├── CarCard.jsx, SeatsBar.jsx, CalPicker.jsx, TimeSlotPicker.jsx
+│   └── AdminPanel.jsx
+├── styles.js
+└── supabase.js
+```
+
 ## Available scripts
 
 ```bash
 npm run dev      # Start the Vite development server
 npm run build    # Create a production build
 npm run lint     # Run ESLint
+npm test         # Run the matching algorithm unit tests
 npm run preview  # Preview the production build locally
 ```
 
@@ -86,7 +120,6 @@ Do not commit `.env` files, service-role keys, passwords, or real participant da
 
 - Add Supabase Auth and role-based access for organizer features
 - Move matching and privileged organizer operations to server-side functions
-- Add automated tests for matching and assignment rules
 - Add database migrations and seed data for repeatable setup
 - Add deployment instructions and a hosted demo
 
